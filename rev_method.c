@@ -1,34 +1,34 @@
 #include "rev_method.h"
 
-int rev_solve(float** A, float* X, int i)//Решение СЛАУ методом вращения.Возвращает количество операций.
+int rev_solve(float** A, float* X, int n)//Решение СЛАУ методом вращения.Возвращает количество операций.
 {
     int counter = 0;//Счетчик количества операций
 	float C, s, A1;//Временные переменые для математических операций
-	for (int k = 0; k<i; k++)
+	for (int i = 0; i < n; i++)
 	{
-		for (unsigned int n = k + 1; n<i; n++)
+		for (int k = i + 1; k < n; k++)
 		{
-			C = A[k][k] / (sqrt((A[k][k] * A[k][k]) + (A[n][k] * A[n][k])));
-			s = A[n][k] / (sqrt((A[k][k] * A[k][k]) + (A[n][k] * A[n][k])));
-			for (unsigned int m = 0; m<i + 1; m++)
+			C = A[i][i] / (sqrt((A[i][i] * A[i][i]) + (A[k][i] * A[k][i])));
+			s = A[k][i] / (sqrt((A[i][i] * A[i][i]) + (A[k][i] * A[k][i])));
+			for (int j = 0; j< n + 1; j++)
 			{
-				A1 = A[k][m];
-				A[k][m] = C*A1 + s*A[n][m];
-				A[n][m] = -s*A1 + C*A[n][m];
+				A1 = A[i][j];
+				A[i][j] = C*A1 + s*A[k][j];
+				A[k][j] = -s*A1 + C*A[k][j];
                 counter++;
 			}
 		}
 	}
-	X[i - 1] = A[i - 1][i] / A[i - 1][i - 1];
-	for (int n = i - 2; n >= 0; n--)
+	X[n - 1] = A[n - 1][n] / A[n - 1][n - 1];
+	for (int i = n - 2; i >= 0; i--)
 	{
-		X[n] = A[n][i];
-		for (unsigned int m = n + 1; m<i; m++)
+		X[i] = A[i][n];
+		for (int j = i + 1; j < n; j++)
 		{
-			X[n] -= A[n][m] * X[m];
+			X[i] -= A[i][j] * X[j];
             counter++;
 		}
-		X[n] /= A[n][n];
+		X[i] /= A[i][i];
 	}
 	return counter;
 }
