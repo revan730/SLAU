@@ -34,3 +34,23 @@ float det(float **a,int n) {
     return determinant;
   }
 }
+
+float** multiply(float **A,float **B,int r1,int r2,int c1,int c2)
+{
+	float **C = new float *[r1];
+   	for (int i = 0;i < r1;i++)
+	{
+		C[i] = new float[c2];
+		for (int k = 0;k < c2;k++)
+			C[i][k] = 0;
+	}	
+	if (c1 == r2)
+	{
+	for (int i = 0;i < r1;i++)
+		for (int j = 0;j < c2;j++)
+			for (int k = 0;k < c1;k++)
+				C[i][j] +=A[i][k] * B[k][j];
+  	return C;	
+	}
+	else return NULL;
+}
