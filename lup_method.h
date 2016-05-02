@@ -7,3 +7,4 @@
 
 int lup_decompose(int,float**,int*);
 void lup_solve(int, int*, float**, float*, float*);
+float** p_matrix(int*,int);

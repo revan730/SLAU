@@ -73,3 +73,16 @@ void lup_solve(int n,int *P,float **A,float *B,float *X)
                     X[i] = (Y[i] - t) / A[i][i];
             }
 }
+
+float** p_matrix(int* P,int n)
+{
+	//Пресдтавление P в виде матрицы
+    float **Pm = new float *[n];
+    for (int i = 0;i < n;i++)
+        Pm[i] = new float[n];
+    for (int i = 0; i < n;i++)
+        for (int k = 0;k < n;k++)
+            if (P[i] == k)
+                Pm[i][k] = 1;
+    return Pm;
+}
