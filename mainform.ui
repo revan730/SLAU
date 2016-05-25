@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>SLAU</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/res/icon.png</normaloff>:/icons/res/icon.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -30,7 +34,7 @@
       <number>2</number>
      </property>
      <property name="maximum">
-      <number>10</number>
+      <number>100</number>
      </property>
     </widget>
    </item>
@@ -86,6 +90,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,48 +1,42 @@
 #include "matrix_method.h"
 
-float det(float **a,int n) {
-	//Нахождение определителя матрицы
-  float determinant = 0;
-  float **temp = new float *[n];
-  for (int i = 0;i < n;i++)
-	  temp[i] = new float[n];
-  int p,h,k,i,j;
-  if(n == 1) {
-    return a[0][0];
-  } else if(n == 2) {
-    determinant = (a[0][0] * a[1][1] - a[0][1] * a[1][0]);
-    return determinant;
-  } else {
-    for(p = 0;p < n;p++) {
-      h = 0;
-      k = 0;
-      for(i = 1;i < n;i++) {
-        for(j = 0;j < n;j++) {
-          if(j == p) {
-            continue;
-          }
-          temp[h][k] = a[i][j];
-          k++;
-          if(k == n-1) {
-            h++;
-            k = 0;
-          }
-        }
-      }
-      determinant = determinant + a[0][p] * pow(-1,p) * det(temp,n-1);
+double det(double **a,int n)//Нахождение определителя матрицы с помощью LUP-метода
+{
+    double **T = new double *[n];
+    int *P = new int [n];
+    int s,q;
+    double Det = 1;
+    for (int i = 0;i < n;i++)
+        T[i] = new double [n];
+
+    for (int i = 0;i < n;i++)
+        for (int j = 0; j < n;j++)
+            T[i][j] = a[i][j];
+
+    if (lup_decompose(n,T,P,s,q) != -1)
+    {
+        for (int i = 0;i < n;i++)
+           Det *= T[i][i];
+        delete[] T;
+        delete[] P;
+        return Det;
     }
-	delete[] temp;
-    return determinant;
-  }
+    else
+    {
+        delete[] T;
+        delete[] P;
+        return 0;
+    }
+
 }
 
-float** multiply(float **A,float **B,int r1,int r2,int c1,int c2)
+double** multiply(double **A,double **B,int r1,int r2,int c1,int c2,int &ic,int &oc)
 {
 	//Умножение матриц
-	float **C = new float *[r1];
+    double **C = new double *[r1];
    	for (int i = 0;i < r1;i++)
 	{
-		C[i] = new float[c2];
+        C[i] = new double[c2];
 		for (int k = 0;k < c2;k++)
 			C[i][k] = 0;
 	}
@@ -51,45 +45,69 @@ float** multiply(float **A,float **B,int r1,int r2,int c1,int c2)
 	for (int i = 0;i < r1;i++)
 		for (int j = 0;j < c2;j++)
 			for (int k = 0;k < c1;k++)
+            {
 				C[i][j] +=A[i][k] * B[k][j];
+                oc++;
+                ic++;
+            }
   	return C;
 	}
 	else return NULL;
 }
 
-float** inverse(float **A,int n)
+double** inverse(double **A,int n,int &ic,int &oc)
 {
 	//Нахождение обратной матрицы с помощью LUP-декомпозиции
-    float **I = new float *[n];
+    double **I = new double *[n];
     for (int i = 0;i < n;i++)
-        I[i] = new float[n];
-    int P[3] = {0,0,0};
-    lup_decompose(n,A,P);
-     for(int k = n-1; k >= 0; k--) {
-    I[ k ][ k ] = 1;
-    for( int j = n-1; j > k; j--)
-        I[ k ][ k ] -= A[ k ][ j ] * I[ j ][ k ];
-    I[ k ][ k ] /= A[ k ][ k ];
-    for( int i = k-1; i >= 0; i-- )
-    {
-        for( int j = n-1; j > i; j-- )
-        {
-            I[ i ][ k ] -= A[ i ][ j ] * I[ j ][ k ];
-            I[ k ][ i ] -= A[ j ][ i ] * I[ k ][ j ];
-        }
-        I[ i ][ k ] /= A[ i ][ i ];
-    }
- }
- float **Pm = p_matrix(P,n);
+        I[i] = new double[n];
+    for (int i = 0 ;i < n;i++)
+        for (int j = 0; j < n;j++)
+            I[i][j] = 0;
 
- return multiply(I,Pm,n,n,n,n);
+    int *P = new int[n];
+    lup_decompose(n,A,P,ic,oc);
+
+     for(int k = n-1; k >= 0; k--)
+     {
+        I[k][k] = 1;
+        oc++;
+        for( int j = n-1; j > k; j--)
+        {
+            I[k][k] -= A[k][j] * I[j][k];
+            oc++;
+            ic++;
+        }
+        I[k][k] /= A[k][k];
+        oc++;
+        for( int i = k-1; i >= 0; i-- )
+        {
+            for( int j = n-1; j > i; j-- )
+            {
+                I[i][k] -= A[i][j] * I[j][k];
+                oc++;
+                I[k][i] -= A[j][i] * I[k][j];
+                oc++;
+                ic++;
+            }
+            I[i][k] /= A[i][i];
+            oc++;
+        }
+ }
+ double **Pm = p_matrix(P,n);
+
+ return multiply(I,Pm,n,n,n,n,ic,oc);//Умножаем на матрицу перестановок для получение правильного порядка строк
 }
 
-void matrix_solve(float **Ar,float **B,float *X,int n)
+void matrix_solve(double **Ar,double **B,double *X,int n,int &ic,int &oc)
 {
 	//Решение СЛАУ матричным методом
-    float **S = multiply(Ar,B,n,n,n,1);
+    double **S = multiply(Ar,B,n,n,n,1,ic,oc);
     for (int i = 0;i < n;i++)
+    {
         X[i] = S[i][0];
+        oc++;
+        ic++;
+    }
 	delete[] S;
 }

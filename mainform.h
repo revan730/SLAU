@@ -27,9 +27,10 @@ private:
     void SolveLUP(int);
     void SolveRev(int);
     void Error(QString);
-    void FillRoots(float*,int);
+    void FillRoots(double*,int);
     void Info(QString);
-    void WriteResult(float*,int);
+    void WriteResult(double*,int);
+    void DrawPlot();
 };
 
 #endif // MAINFORM_H

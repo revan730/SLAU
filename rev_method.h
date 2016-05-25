@@ -4,6 +4,7 @@
 
 #endif // REV_METHOD_H
 #include <math.h>
+#include <ctime>
 
-int rev_solve(float**, float*, int);
+int rev_solve(double**, double*, int,int&,int&);
 

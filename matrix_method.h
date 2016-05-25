@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include "lup_method.h"
 
-float det(float**,int);
-float** multiply(float**,float**,int,int,int,int);
-float** inverse(float**,int);
-void solve(float**,float**,float*,int);
-int lup_decompose(int,float,int);
-void matrix_solve(float**,float**,float*,int);
+double det(double**,int);
+double** multiply(double**,double**,int,int,int,int,int&,int&);
+double** inverse(double**,int,int&,int&);
+void solve(double**,double**,double*,int,int&,int&);
+int lup_decompose(int,double,int);
+void matrix_solve(double**,double**,double*,int,int&,int&);

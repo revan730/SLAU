@@ -5,6 +5,6 @@
 #endif // LUP_METHOD_H
 #include <stdlib.h>
 
-int lup_decompose(int,float**,int*);
-void lup_solve(int, int*, float**, float*, float*);
-float** p_matrix(int*,int);
+int lup_decompose(int,double**,int*,int&,int&);
+void lup_solve(int, int*, double**, double*, double*,int&,int&);
+double** p_matrix(int*,int);
